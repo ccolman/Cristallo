@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+<style>
+    .div1 {
+      float: left;
+      width: 50%;
+      clear: both;
+    }
+    
+    .div2 {
+      float: right;
+      width: 50%;
+    }
+
+    .div3 {
+      clear: both;
+    }
+    
+</style>
+
+<script type="text/javascript">
+   function updateMathContent(s) {
+       var math = MathJax.Hub.getAllJax("mathdiv")[0];
+       MathJax.Hub.Queue(["Text", math, s]);
+   }
+</script>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+<script id="MathJax-script" async
+          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<p> This page takes the raw data selected, displays a visual representation of the data
+	<br> Additionally, this post-processes the information that can be used in other simulations
+</p>
+<hr>
+
+<div class="div3">
+	<div class="div1">
+		<fieldset>
+			<legend> Average Modal Properties:</legend>
+			<table>
+				{% for val in range(form['Wn']|length) %}
+				<tr>
+				<td> \(\Omega_{{val+1}}\)</td><td>:</td><td>{{form['Wn'][val]}}</td><td>[Hz]</td>
+				<td> \(\zeta_{{val+1}}\)</td><td>:</td><td>{{form['Zeta'][val]}}</td><td>[%]</td>
+				</tr>
+				{% endfor %}
+			</table>
+		</fieldset>
+    </div>
+	<div class="div2">
+        <form action="/LVVSweep/{{form['Test_Name']}}" method="POST">
+            <fieldset>
+                <legend>Local Save</legend>
+                <table>
+                    <tr>
+                        <td>File Name (.npy will be added automatically)</td>
+                        <td><input type="text" id="fname" name="fname"></td>
+                    </tr>
+        	</table>
+        	<input type="submit" value="Save to Local Folder">
+            </fieldset>
+        	<br>
+        </form>
+    </div>
+</div>
+    
+<div class="div3">
+</div>
+<div class="div3">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="chart" id="FRF">
+                <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+                    <script>
+                        var graphs = {{form['plot1'] | safe}};
+                        Plotly.plot('FRF',graphs,{});
+                    </script>
+                </div>
+        </div>
+    </div>
+</div>
+<div class="div3">
+</div>
+<div class="div3">
+	<div class="row">
+            <div class="col-md-6">
+                <div class="chart" id="ModeShapes">
+                <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+                    <script>
+                        var graphs = {{form['plot2'] | safe}};
+                        Plotly.plot('ModeShapes',graphs,{});
+                    </script>
+                </div>
+            </div>
+        </div>
+	
+</div>
+<hr>
+<div class="div3">
+</div>
+
+{% endblock %}
